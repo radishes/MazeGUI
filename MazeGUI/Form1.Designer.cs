@@ -68,6 +68,7 @@
             this.saveMazeToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.gbAlgorithm.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -316,7 +317,7 @@
             this.trackbarSpeed.Maximum = 25;
             this.trackbarSpeed.Minimum = 1;
             this.trackbarSpeed.Name = "trackbarSpeed";
-            this.trackbarSpeed.Size = new System.Drawing.Size(211, 81);
+            this.trackbarSpeed.Size = new System.Drawing.Size(211, 45);
             this.trackbarSpeed.TabIndex = 7;
             this.trackbarSpeed.Value = 12;
             this.trackbarSpeed.Scroll += new System.EventHandler(this.trackbarSpeed_Scroll);
@@ -423,6 +424,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveMazeToFileToolStripMenuItem,
+            this.settingsToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -445,6 +447,13 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.Filter = "PNG image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.settingsToolStripMenuItem.Text = "Settings...";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -475,7 +484,6 @@
             this.Name = "Form1";
             this.Text = "Maze Generator!";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.gbAlgorithm.ResumeLayout(false);
@@ -534,6 +542,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveMazeToFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
     }
 }
 

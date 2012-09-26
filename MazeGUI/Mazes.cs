@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Diagnostics;
 using Mazes.Algorithms;
 
 namespace Mazes
@@ -153,16 +154,18 @@ namespace Mazes
     {
         public Mazes.Point p;
         public ExploredPoint parent;
+        public int generation;
 
-        public ExploredPoint(Point p, ExploredPoint parent)
+        public ExploredPoint(Point p, ExploredPoint parent, int generation)
         {
             this.p = p;
             this.parent = parent;
+            this.generation = generation;
         }
         
         public bool Equals(ExploredPoint other)
         {
-            bool b = (this.p == other.p && this.parent == other.parent);
+            bool b = (this.p == other.p);
             return b;
         }
 
@@ -185,13 +188,14 @@ namespace Mazes
         Func<Point, Color> PeekFunc;
         Func<Point, Color, bool> SetPixelFunc;
         int maxId;
+        int currentGen;
         public int state;
         public List<ExploredPoint> exploredPoints;
         public List<Point> solution;
 
         Point start;
         Point end;
-        int indexOfEndFinder = -1;
+       // int indexOfEndFinder = -1;
 
         //public LinkedList<SolveUnit> solvers;
         public List<ExploredPoint> alivePoints;
@@ -204,7 +208,7 @@ namespace Mazes
             this.end = end;
             this.PeekFunc = PeekFunc;
             this.SetPixelFunc = setPixelFunc;
-            this.maxId = 0;
+            this.currentGen = 0;
             this.state = 0;
 
             exploredPoints = new List<ExploredPoint>();
@@ -220,12 +224,18 @@ namespace Mazes
             }
         }
 
-        public List<Point> GetExploredPoints()
+        public HashSet<Point> GetExploredPoints(int gensBack = 2)
         {
-            List<Point> points = new List<Point>();
-            foreach (ExploredPoint ep in exploredPoints)
+            HashSet<Point> points = new HashSet<Point>();
+            //HashSet<Point> points = exploredPoints.Aggregate((points, next) => points.Add(next.p));
+            //points.Zip<Point, Point> ;
+            int oldestGen = currentGen - gensBack;
+            for (int i = exploredPoints.Count-1; i >= 0; i--)
+            //foreach (ExploredPoint ep in exploredPoints)
             {
-                points.Add(ep.p);
+                if (exploredPoints[i].generation < oldestGen)
+                    break;
+                points.Add(exploredPoints[i].p);
             }
             return points;
         }
@@ -238,18 +248,23 @@ namespace Mazes
             if (this.alivePoints.Count <= 0)
             { // no solve in progress already, initialize solver
                 this.state = 1;
-                this.exploredPoints.Add(new ExploredPoint(start, null));
+                this.exploredPoints.Add(new ExploredPoint(start, null, 0));
+                this.currentGen = 1;
                 for (int d = 0; d < 4; d++)
                 {
-                    alivePoints.Add(new ExploredPoint(MazeTools.MovePoint(start, MazeTools.DirToPoint(d)), exploredPoints.First()));
-                    this.exploredPoints.Add(new ExploredPoint(MazeTools.MovePoint(start, MazeTools.DirToPoint(d)), exploredPoints.First()));
+                    alivePoints.Add(new ExploredPoint(MazeTools.MovePoint(start, MazeTools.DirToPoint(d)), exploredPoints.First(), currentGen));
+                    this.exploredPoints.Add(new ExploredPoint(MazeTools.MovePoint(start, MazeTools.DirToPoint(d)), exploredPoints.First(), currentGen));
                 }
             }
 
             List<ExploredPoint> nextGenPoints = new List<ExploredPoint>();
+            this.currentGen++;
 
-            List<Point> ep = GetExploredPoints();
-            int loops = 0;
+Stopwatch stopwatch = Stopwatch.StartNew();
+            HashSet<Point> ep = GetExploredPoints();
+stopwatch.Stop();
+Debug.WriteLine(stopwatch.ElapsedTicks);
+
             foreach (ExploredPoint node in alivePoints)
             {
 
@@ -258,26 +273,29 @@ namespace Mazes
                     this.state = 4;
                 }
 
-                if (this.state == 4)
+                if (this.state >= 4)
                     break; // found solution
-
                 List<Point> pNeighbors = node.p.GetSurroundingPoints();
                 foreach (Point neighbor in pNeighbors)
                 {
                     if (MazeTools.ArePointsEqual(node.parent.p, neighbor))
                         continue;
+//Stopwatch stopwatch = Stopwatch.StartNew();
                     if (ep.Contains(neighbor))
                         continue;
+//stopwatch.Stop();
+//Debug.WriteLine(stopwatch.ElapsedTicks);
                     if (PeekFunc(neighbor) == this.pathColor)
                     {
                         // maintaining three separate lists with similar information. this can be fixed up I bet.
-                        nextGenPoints.Add(new ExploredPoint(neighbor, node));
-                        this.exploredPoints.Add(new ExploredPoint(neighbor, node));
+                        nextGenPoints.Add(new ExploredPoint(neighbor, node, this.currentGen));
+                        this.exploredPoints.Add(new ExploredPoint(neighbor, node, this.currentGen));
                         ep.Add(neighbor); // ugh
                     }
-                }
 
-                loops++;
+
+                }                    
+                
             } // end foreach node in alivePoints
 
             if (this.state == 4)
@@ -291,10 +309,7 @@ namespace Mazes
                         solution.Add(new Point(tracer.p.X, tracer.p.Y));
                         tracer = tracer.parent;
                     }
-                    foreach (Point s in solution)
-                    {
-                        SetPixelFunc(s, Color.Lime);
-                    }
+                    this.state = 12;
                 }
             }
 

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Mazes;
 using Mazes.Algorithms;
 
@@ -22,9 +23,11 @@ namespace MazeGUI
         Mazes.Point firstCell;
         Mazes.Point prevCell;
 
-        Color solvePathColor = Color.White;
-
-         
+        public Color wallColor = Color.Black;
+        public Color pathColor = Color.White;
+        public Color solvePathColor = Color.Teal;
+        public Color solutionColor = Color.Lime;
+        
 
         public Form1()
         {
@@ -81,7 +84,8 @@ namespace MazeGUI
             {
                 return false;
             }
-            bool r = (color.Name == "ff000000");
+            //bool r = (color.Name == "ff000000");
+            bool r = (color.ToArgb() == wallColor.ToArgb());
 
             //toolbarLabel1.Text = color.ToString() + "     PeekPixel = " + r;
             return r;
@@ -100,7 +104,7 @@ namespace MazeGUI
 
         public bool SetRect(Rect r)
         {
-            return SetRect(r, Color.White);
+            return SetRect(r, pathColor);
         }
 
         public bool SetRect(Rect r, Color color)
@@ -152,7 +156,7 @@ namespace MazeGUI
             mazeBmp = new Bitmap(wd, ht);
             mazePanel.Invalidate();
             this.prevCell = new Mazes.Point(-1, -1);
-            SetRect(new Rect(0,0, mazeBmp.Width, mazeBmp.Height), Color.Black);
+            SetRect(new Rect(0,0, mazeBmp.Width, mazeBmp.Height), wallColor);
             this.maze = new Mazes.Maze(new Mazes.Point(0, 0), new Mazes.Point(wd, ht), new Mazes.Point(sx, sy),
                         tunnel, wall, algo, variant, this.PeekPixel, this.SetRect);
             createInProgress = true;
@@ -276,7 +280,7 @@ namespace MazeGUI
                     }
                     if (c > 1)
                     {
-                        SetRect(new Rect(this.prevCell, maze.mazeData.tunnelWidthP()), Color.White);
+                        SetRect(new Rect(this.prevCell, maze.mazeData.tunnelWidthP()), pathColor);
                         toolbarLabel1.Text = maze.mazeData.lastCell.ToString() + " / " + this.prevCell.ToString();
                     }
                     this.prevCell = maze.mazeData.lastCell;
@@ -295,21 +299,34 @@ namespace MazeGUI
             if (solveInProgress)
             {
                 int prevExp = solver.exploredPoints.Count;
-                this.solver.SolveStep();
 
-                for (int i = prevExp;  i < solver.exploredPoints.Count; i++)
+              //  Stopwatch stopwatch = Stopwatch.StartNew();
+                this.solver.SolveStep();
+             //   stopwatch.Stop();
+             //   Debug.WriteLine(stopwatch.ElapsedMilliseconds);
+
+               // for (int i = prevExp;  i < solver.exploredPoints.Count; i++)
+                foreach (ExploredPoint ep in solver.exploredPoints)
                 {
-                    mazeBmp.SetPixel(solver.exploredPoints[i].p.X, solver.exploredPoints[i].p.Y, Color.Green);
+                    //mazeBmp.SetPixel(solver.exploredPoints[i].p.X, solver.exploredPoints[i].p.Y, solvePathColor);
+                    mazeBmp.SetPixel(ep.p.X, ep.p.Y, solvePathColor);
                 }
 
                 if (solver.state == 4)
                 {
                     //solver.
                 }
-                else if (solver.state == 8)
+                else if (solver.state >= 8)
                 {
                     solveInProgress = false;
                     timer1.Stop();
+                }
+                if (solver.state >= 12)
+                {
+                    foreach (Mazes.Point s in solver.solution)
+                    {
+                        SetPixel(s, solutionColor);
+                    }
                 }
                 this.toolbarLabel1.Text = "alivePoints.Count: " + solver.alivePoints.Count();
                 mazePanel.Invalidate();
@@ -333,12 +350,6 @@ namespace MazeGUI
                 }
             }
 
-        }
-
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            //mazePanel.Width = this.Width - mazePanel.Location.X+100;
-            //mazePanel.Height = this.Height+100;
         }
 
         private void tbMazeSize_Leave(object sender, EventArgs e)
@@ -459,6 +470,21 @@ namespace MazeGUI
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            formSettings formS = new formSettings();
+            formS.cWallColor = this.wallColor;
+            formS.cPathColor = this.pathColor;
+            formS.cSolvePathColor = this.solvePathColor;
+            formS.cSolutionColor = this.solutionColor;
+            formS.ShowDialog(this);
+            this.wallColor = formS.cWallColor;
+            this.pathColor = formS.cPathColor;
+            this.solvePathColor = formS.cSolvePathColor;
+            this.solutionColor = formS.cSolutionColor;
+
         }
 
 
