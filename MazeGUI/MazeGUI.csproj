@@ -61,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Braid.cs" />
+    <Compile Include="Algorithms\GT-Braided.cs" />
     <Compile Include="Algorithms\GrowingTree.cs" />
     <Compile Include="BaseAlgorithm.cs" />
     <Compile Include="Form1.cs">
@@ -69,13 +71,13 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Mazes.cs" />
     <Compile Include="settingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="settingsForm.Designer.cs">
       <DependentUpon>settingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Mazes.cs" />
     <Compile Include="MazeTools.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

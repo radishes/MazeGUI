@@ -66,9 +66,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveMazeToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.gbAlgorithm.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -153,7 +153,8 @@
             this.comboAlgorithm.FormattingEnabled = true;
             this.comboAlgorithm.Items.AddRange(new object[] {
             "Growing Tree",
-            "Something Else"});
+            "GT Braided",
+            "Braid"});
             this.comboAlgorithm.Location = new System.Drawing.Point(4, 19);
             this.comboAlgorithm.Name = "comboAlgorithm";
             this.comboAlgorithm.Size = new System.Drawing.Size(185, 21);
@@ -437,6 +438,13 @@
             this.saveMazeToFileToolStripMenuItem.Text = "&Save Maze to File...";
             this.saveMazeToFileToolStripMenuItem.Click += new System.EventHandler(this.saveMazeToFileToolStripMenuItem_Click);
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.settingsToolStripMenuItem.Text = "Settings...";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -447,13 +455,6 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.Filter = "PNG image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.settingsToolStripMenuItem.Text = "Settings...";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // Form1
             // 

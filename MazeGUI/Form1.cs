@@ -216,7 +216,7 @@ namespace MazeGUI
             Mazes.Point p1 = new Mazes.Point(sx, sy);
             Mazes.Point p2 = new Mazes.Point(ex, ey);
 
-            solver = new Solver(p1, p2, this.GetPixel, this.SetPixel);
+            solver = new Solver(p1, p2, this.PeekPixel);
 
             solveInProgress = true;
             timer1.Start();
@@ -309,6 +309,7 @@ namespace MazeGUI
                 foreach (ExploredPoint ep in solver.exploredPoints)
                 {
                     //mazeBmp.SetPixel(solver.exploredPoints[i].p.X, solver.exploredPoints[i].p.Y, solvePathColor);
+                    // bug here - exception if edge of map is reached.
                     mazeBmp.SetPixel(ep.p.X, ep.p.Y, solvePathColor);
                 }
 

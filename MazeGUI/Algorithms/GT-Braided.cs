@@ -6,19 +6,15 @@ using System.Drawing;
 
 namespace Mazes.Algorithms
 {
-    public class GrowingTree : BaseAlgorithm
+    public class GTBraided : BaseAlgorithm
     {
         bool initialized = false;
         List<Point> visitedCells = new List<Point>();
 
-        public static string name = "Growing Tree";
-        public static List<string> variants = new List<string>() { "Last Cell (Recursive Backtracker)",
-                                                                         "Random Cell",
-                                                                         "Last or Random Cell",
-                                                                         "First Cell",
-                                                                         "Middle Cell" };
+        public static string name = "GT Braided";
+        public static List<string> variants = new List<string>() { "1-A" };
 
-        public GrowingTree(Func<Point, bool> PeekFunc, Func<Rect, Boolean> NukeFunc)
+        public GTBraided(Func<Point, bool> PeekFunc, Func<Rect, Boolean> NukeFunc)
             : base(PeekFunc, NukeFunc)
         { // I think this is how to call the base constructor, but check back if not
         }
@@ -42,11 +38,7 @@ namespace Mazes.Algorithms
                 }
             } // end initialization block
 
-            if (visitedCells.Count <= 0)
-            {
-                return new MazeState(8, "Maze completed.");
-            }
-            else
+            if (visitedCells.Count > 0)
             {
                 Point p;
                 switch (md.variant)
@@ -103,6 +95,13 @@ namespace Mazes.Algorithms
                 } //end directions foreach loop
                 
                 return new MazeState(2, String.Format("Maze in progress; currently at ({0},{1}).", p.X, p.Y));
+            }
+            else
+            {
+              //  if ()
+                {
+                    return new MazeState(8, "Maze completed.");
+                }
             }
 
 

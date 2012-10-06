@@ -131,10 +131,20 @@ namespace Mazes
             mazeData = new MazeData(coords, size, startCoords, tunnelWidth, wallWidth, variant);
 
             if (allAlgorithms.Count == 0)
+            {
                 allAlgorithms.Add(GrowingTree.name, new GrowingTree(PeekFunc, NukeFunc));
+                allAlgorithms.Add(Braid.name, new Braid(PeekFunc, NukeFunc));
+                allAlgorithms.Add(GTBraided.name, new GTBraided(PeekFunc, NukeFunc));
+            }
 
             switch (algorithmID)
             {
+                case 2:
+                    this.mazeAlgorithm = new Braid(PeekFunc, NukeFunc);
+                    break;
+                case 1:
+                    this.mazeAlgorithm = new GTBraided(PeekFunc, NukeFunc);
+                    break;
                 default:
                     this.mazeAlgorithm = new GrowingTree(PeekFunc, NukeFunc);
                     break;
@@ -183,11 +193,7 @@ namespace Mazes
 
     public class Solver
     {
-        Color[] mazeArray;
-        Color pathColor;
-        Func<Point, Color> PeekFunc;
-        Func<Point, Color, bool> SetPixelFunc;
-        int maxId;
+        Func<Point, bool> PeekFunc;
         int currentGen;
         public int state;
         public List<ExploredPoint> exploredPoints;
@@ -200,23 +206,19 @@ namespace Mazes
         //public LinkedList<SolveUnit> solvers;
         public List<ExploredPoint> alivePoints;
 
-        public Solver(Point start, Point end, Func<Point, Color> PeekFunc, Func<Point, Color, bool> setPixelFunc)
+        public Solver(Point start, Point end, Func<Point, bool> PeekFunc)
         {
             //this.solvers = new LinkedList<SolveUnit>();
             this.alivePoints = new List<ExploredPoint>();
             this.start = start;
             this.end = end;
             this.PeekFunc = PeekFunc;
-            this.SetPixelFunc = setPixelFunc;
             this.currentGen = 0;
             this.state = 0;
 
             exploredPoints = new List<ExploredPoint>();
 
-            Color p1Color = this.pathColor = this.PeekFunc(start);
-            Color p2Color = this.PeekFunc(end);
-
-            if (p1Color != p2Color)
+            if (this.PeekFunc(start) != this.PeekFunc(end))
             {
                 state = -4;
              //   MessageBoxError("The beginning and end points are not on the same colored surface, so there is no valid path between them. Check your parameters and try again. Use the left and right mouse buttons to set the start and end point on the same colored path.");
@@ -285,7 +287,7 @@ Debug.WriteLine(stopwatch.ElapsedTicks);
                         continue;
 //stopwatch.Stop();
 //Debug.WriteLine(stopwatch.ElapsedTicks);
-                    if (PeekFunc(neighbor) == this.pathColor)
+                    if (!PeekFunc(neighbor))
                     {
                         // maintaining three separate lists with similar information. this can be fixed up I bet.
                         nextGenPoints.Add(new ExploredPoint(neighbor, node, this.currentGen));
